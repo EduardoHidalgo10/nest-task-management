@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException , InternalServerErrorException } from '@nestjs/common';
 import {TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
@@ -12,7 +12,7 @@ export class TasksService {
     }
 
   getTasks(filterDto:GetTasksFilterDto): Promise<Task[]> {
-
+    return this.tasksRepository.getTasks(filterDto);
   }
  
     // // Get task by ID
@@ -26,8 +26,17 @@ export class TasksService {
   }
 
     // // Create a new task
-    async createTask(createTaskDto:CreateTaskDto):Promise<Task>{
-        return this.tasksRepository.createTask(createTaskDto);
+    async createTask(createTaskDto:CreateTaskDto):Promise<Task | undefined>{
+      try {
+        return await this.tasksRepository.createTask(createTaskDto);
+      } catch (error) {
+        console.log(error)
+        if(error.code === '23505') {
+          throw new ConflictException(`Task with the same title already exists`)
+        } else {
+          throw new InternalServerErrorException();
+        }
+      }
     }
 
     // // Delete a task
