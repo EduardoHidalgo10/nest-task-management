@@ -9,17 +9,20 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     TasksModule,
     TypeOrmModule.forRoot({
-      type:'postgres',
-      host:'postgres.railway.internal',
-      port:5432,
-      username:'postgres',
-      password:'OntLpvbmaDvQudOFSERrcfcheKiFdOue',
-      database:'railway',
-      autoLoadEntities:true,
-      synchronize:true,
+      type: 'postgres',
+      host: 'trolley.proxy.rlwy.net',   
+      port: 16592,                       
+      username: 'postgres',              
+      password: 'OntLpvbmaDvQudOFSERrcfcheKiFdOue', 
+      database: 'railway',              
+      autoLoadEntities: true,
+      synchronize: true,                  
+      ssl: {
+        rejectUnauthorized: false,        
+      },
     }),
-    AuthModule
+  AuthModule
     
   ],
 })
-export class AppModule {}
+export class AppModule { }
